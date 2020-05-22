@@ -1,0 +1,55 @@
+{
+  "name": "pg-test-replica",
+  "version": "0.0.1",
+  "description": "Testing PostgreSQL replication",
+  "main": "src/index.js",
+  "repository": "git@github.com:minaeiehsan/pg-test-replica.git",
+  "author": "ehsan.minaei@join.com",
+  "license": "UNLICENSED",
+  "scripts": {
+    "pg:test": "yarn db:migrate && yarn env:dev ts-node ./src/scripts/run.ts",
+    "pg:sync:on": "SYNC_MODE=on docker-compose up -d && sleep 5 && yarn pg:test",
+    "pg:sync:off": "SYNC_MODE=off docker-compose up -d && sleep 5 && yarn pg:test",
+    "env:dev": "env-cmd -e defaults",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx --max-warnings 0",
+    "typeorm:dev": "yarn env:dev ts-node ./node_modules/.bin/typeorm",
+    "db:migrations:generate": "yarn typeorm:dev migration:generate",
+    "db:migrate": "yarn typeorm:dev migration:run",
+    "db:migrate:revert": "yarn typeorm:dev migration:revert"
+  },
+  "lint-staged": {
+    "server/**/*.ts": [
+      "yarn lint --fix"
+    ],
+    "*.{js,ts}": [
+      "yarn prettier --write"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn tsc --noEmit && lint-staged"
+    }
+  },
+  "dependencies": {
+    "pg": "^7.18.2",
+    "typeorm": "^0.2.18"
+  },
+  "devDependencies": {
+    "@types/jest": "^25.1.4",
+    "@typescript-eslint/eslint-plugin": "^2.23.0",
+    "@typescript-eslint/parser": "^2.23.0",
+    "env-cmd": "^10.1.0",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.10.0",
+    "eslint-plugin-jest": "^23.8.2",
+    "husky": "^4.2.3",
+    "jest": "^25.1.0",
+    "jest-extended": "^0.11.5",
+    "jest-watch-typeahead": "^0.4.2",
+    "lint-staged": "^10.0.8",
+    "prettier": "^1.19.1",
+    "ts-jest": "^25.2.1",
+    "ts-node": "^8.6.2",
+    "typescript": "^3.8.3"
+  }
+}
